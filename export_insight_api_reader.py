@@ -20,7 +20,7 @@ def main():
 def download_data_from_export_insight_api():
     # Step 1: call API
     # just for mockup API ~ to be replaced
-    url = "http://www.mocky.io/v2/5ae691992e00002b003825aa"
+    url = "http://www.mocky.io/v2/5ae6ccf12f00001000f0583a"
     # call Export Insight API with headers 'x-api-key' & 'file-format': json
     headers = {
         'cache-control': "no-cache",
@@ -28,7 +28,7 @@ def download_data_from_export_insight_api():
         'x-api-key': "your-aixon-api-key",
         'file-format': "json"
     }
-    response = requests.request("GET", url, headers=headers)
+    response = requests.request("GET", url, headers=headers) #change to POST in real API
     total_export_count = int(response.headers['Total-Export-Count'])
     # Step 2: save download file
     file = open(temp_download_file_name, "w")
@@ -66,8 +66,8 @@ def process_a_customer_data(data):
     print(customer['Out of network keywords']) ##array of string
     print(customer['In network keywords']) #array of string
     print(customer['Custom keywords']) #array of string
-    print(customer['Preset Interest']) #array of dictionary
-    print(customer['My Interest']) #array of dictionary
+    print(customer['Preset Interest']) #array of dictionary, including interest & keywords
+    print(customer['My Interest']) #array of dictionary, including interest & keywords
     #Step 2: store into your database
     print("TODO: store customer data into your database")
 
