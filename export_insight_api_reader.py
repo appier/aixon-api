@@ -29,6 +29,7 @@ def download_data_from_export_insight_api():
         'file-format': "json"
     }
     response = requests.request("GET", url, headers=headers, stream=True)
+    #response = requests.request("GET", url, headers=headers, stream=True,verify=False) # if calls proxy server by IP
     # Step 2: save download file
     with open(temp_download_file_name, 'w') as f:
         for line in response.iter_lines():
