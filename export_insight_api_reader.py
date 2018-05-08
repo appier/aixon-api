@@ -20,7 +20,7 @@ def main():
 def download_data_from_export_insight_api():
     # Step 1: call API
     # just for mockup API ~ to be replaced
-    url = "http://www.mocky.io/v2/5ae6ccf12f00001000f0583a"
+    url = "https://aixon.appier.com/api_download/v1/output/your-resource-id"
     # call Export Insight API with headers 'x-api-key' & 'file-format': json
     headers = {
         'cache-control': "no-cache",
@@ -28,13 +28,15 @@ def download_data_from_export_insight_api():
         'x-api-key': "your-aixon-api-key",
         'file-format': "json"
     }
-    response = requests.request("GET", url, headers=headers) #change to POST in real API
-    total_export_count = int(response.headers['Total-Export-Count'])
+    response = requests.request("GET", url, headers=headers, stream=True)
     # Step 2: save download file
-    file = open(temp_download_file_name, "w")
-    file.write(response.text)
-    file.close()
+    with open(temp_download_file_name, 'w') as f:
+        for line in response.iter_lines():
+            if line:
+                f.write(line.decode("utf-8"))
+                f.write('\n')
     # Step 3: check download lines matched
+    total_export_count = int(response.headers['Total-Export-Count'])
     download_lines = sum(1 for line in open(temp_download_file_name))
     if total_export_count == download_lines:
         print("Download count matched")
