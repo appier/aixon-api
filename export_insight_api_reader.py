@@ -2,8 +2,12 @@ from datetime import datetime
 import sys
 import requests
 import json
+import http.client
 
-temp_download_file_name = "download_data.dat"
+temp_download_file_name = "download_data_" + datetime.today().strftime('%Y-%m-%d') + ".dat"
+#avoid Chunked encoded error
+http.client.HTTPConnection._http_vsn = 10
+http.client.HTTPConnection._http_vsn_str = 'HTTP/1.0'
 
 def main():
     try:
@@ -18,8 +22,8 @@ def main():
 
 
 def download_data_from_export_insight_api():
-    # Step 1: call API
-    # just for mockup API ~ to be replaced
+    ## Step 1: call API
+    # replaced by your api endpoint
     url = "https://aixon.appier.com/api_download/v1/output/your-resource-id"
     # call Export Insight API with headers 'x-api-key' & 'file-format': json
     headers = {
@@ -29,17 +33,17 @@ def download_data_from_export_insight_api():
         'file-format': "json"
     }
     response = requests.request("GET", url, headers=headers, stream=True)
-    #response = requests.request("GET", url, headers=headers, stream=True,verify=False) # if calls proxy server by IP
-    # Step 2: save download file
+    #if calls proxy server by IP
+    #response = requests.request("GET", url, headers=headers, stream=True, verify=False)
+    ## Step 2: save stream into downloaded file
     with open(temp_download_file_name, 'w') as f:
         for line in response.iter_lines():
             if line:
-                f.write(line.decode("utf-8"))
-                f.write('\n')
-    # Step 3: check download lines matched
+                f.write(line.decode("utf-8") + '\n')
+    ## Step 3: check download lines matched
     total_export_count = int(response.headers['Total-Export-Count'])
-    download_lines = sum(1 for line in open(temp_download_file_name))
-    if total_export_count == download_lines:
+    download_file_lines = sum(1 for line in open(temp_download_file_name))
+    if total_export_count == download_file_lines:
         print("Download count matched")
         return True
     else:
