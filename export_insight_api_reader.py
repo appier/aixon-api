@@ -6,8 +6,8 @@ import http.client
 
 temp_download_file_name = "download_data_" + datetime.today().strftime('%Y-%m-%d') + ".dat"
 #avoid Chunked encoded error
-http.client.HTTPConnection._http_vsn = 10
-http.client.HTTPConnection._http_vsn_str = 'HTTP/1.0'
+#http.client.HTTPConnection._http_vsn = 10
+#http.client.HTTPConnection._http_vsn_str = 'HTTP/1.0'
 
 def main():
     try:
@@ -37,8 +37,10 @@ def download_data_from_export_insight_api():
     #response = requests.request("GET", url, headers=headers, stream=True, verify=False)
     ## Step 2: save stream into downloaded file
     with open(temp_download_file_name, 'w') as f:
+        print('processing')
         for line in response.iter_lines():
             if line:
+                print('.', end='', flush=True)
                 f.write(line.decode("utf-8") + '\n')
     ## Step 3: check download lines matched
     total_export_count = int(response.headers['Total-Export-Count'])
